@@ -33,7 +33,7 @@ glass_thickness = 3;
 glass_xsize = 200;
 glass_ysize = 200;
 
-echo(str("Clearance: ", (bearing_od / 2 - bearing_cutheight) - bearing_id / 2, "mm"));
+//echo(str("Clearance: ", (bearing_od / 2 - bearing_cutheight) - bearing_id / 2, "mm"));
 
 module bearing_cutout() {
     square([bearing_cutwidth, bearing_len], center = true);
