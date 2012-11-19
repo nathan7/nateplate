@@ -7,7 +7,7 @@ cut_width = 0.005 * 25.4;
 offsetx_hole = 209;
 offsety_hole = 209;
 
-offsetx_belt = 20;
+offsetx_belt = 22;
 
 hole_diam = 2.6;
 hole_sides = 6;
@@ -57,7 +57,7 @@ module hole() {
 
 module belt_holes_i2() {
     for (x = [-1, 1]) for (y = [-1, 1])
-    translate([x * 10, y * 20] / 2) hole();
+    translate([x * 18, y * 20] / 2) hole();
 }
 
 module belt_holes_i3() {
