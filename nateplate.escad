@@ -1,84 +1,137 @@
-$fn = 50;
+//parameters
+$quality = 20;
+r = 7.5;
 
-bearing_od = 15; //NUM: Bearing OD
-bearing_len = 24; //NUM: Bearing length
-bearing_cutheight = 3; //NUM: Bearing cut height
+cut_width = 0.005 * 25.4;
+
+offsetx_hole = 209;
+offsety_hole = 209;
+
+offsetx_belt = 20;
+
+hole_diam = 2.6;
+hole_sides = 6;
+hole_diam_threadless = 3;
+
+ziptie_width = 4;
+ziptie_thickness = 2;
+ziptie_offset = 1;
+
+xsize = offsetx_hole + r * 2;
+ysize = offsety_hole + r * 2;
+
+bearing_od = 15;
+bearing_len = 24;
+bearing_cutheight = 2.5;
+
+offsetx_bearing = 110;
+offsety_bearing = ysize / 3;
+
+cutout_clip_depth = 30;
+cutout_clip_width = 30;
+cutout_clip_offset = ysize - 2 * cutout_clip_width * 1.5;
+
+cutout_base = true;
+
+/* here be dragons */
+
+//calculations
 bearing_cutwidth = sin(acos(1 - (2 * bearing_cutheight) / bearing_od)) * bearing_od;
 
-xsize = 220; //NUM: Bed width
-ysize = 220; //NUM: Bed length
-clearance = 1; //BOOL: Cutout for bar clamp clearance
-offsetx_bearing = xsize / 2;
-offsety_bearing = ysize / 3;
-clearance_xsize = offsetx_bearing + bearing_od;
-clearance_yoffset = offsety_bearing + bearing_len * 2;
-overconstrained = 1; //BOOL: Use 4 bearings
-offsetx_hole = 209; //NUM: X distance between holes
-offsety_hole = 209; //NUM: Y distance between holes
-offset_beltclampx = 18; //NUM: Distance between belt clamp holes in X
-offset_beltclampy = 20; //NUM: Distance between extra belt clamp holes in Y
-hole_diam = 3; //NUM: Diameter of holes
-clamp_depth = 15; //NUM: Clamp cutout depth
-clamp_width = 30; //NUM: Clamp cutout width
-offset_clamp = ysize - clamp_width - 30 * 2;
-r = 7.5; //NUM: Rounding radius
-//this doesn't influence the lasercut part, just the assembled view.
-bearing_id = 8;
-sheet_thickness = 3;
-spacing = 1;
-pcb_thickness = 1;
-pcb_xsize = 214;
-pcb_ysize = 214;
-glass_thickness = 3;
-glass_xsize = 200;
-glass_ysize = 200;
-
-//echo(str("Clearance: ", (bearing_od / 2 - bearing_cutheight) - bearing_id / 2, "mm"));
-
-module bearing_cutout() {
-    square([bearing_cutwidth, bearing_len], center = true);
-    for (x = [-1, 1]) translate([x * (bearing_cutwidth / 2 + 2), 0]) square([1.5, 4], center = true); //for a ziptie
+//singular parts
+module ziptie() {
+    square([ziptie_thickness - 2 * cut_width, ziptie_width - 2 * cut_width], center = true);
 }
 
-module ytable() difference() {
-    difference(r = r) {
-        square([xsize, ysize], center = true, r = r);
-        for (x = [-1, 1]) for (y = [-1, 1]) translate([x * xsize, y * offset_clamp] / 2) square([(clamp_depth + r) * 2, clamp_width], center = true, r = r);
-        if (clearance != 0) translate([-clearance_xsize / 2, 0]) {
-            translate([0, clearance_yoffset] / 2) square([clearance_xsize, ysize], r = r);
-            translate([0, -ysize / 2 + 10]) square([clearance_xsize, ysize / 2 - clearance_yoffset / 2 + 10], r = r);
-        }
-    }
-    for (x = [-1, 1]) for (y = [-1, 0, 1]) {
-        if (y != 0) translate([x * offsetx_hole, y * offsety_hole] / 2) circle(r = hole_diam / 2);
-        translate([x * offset_beltclampx, y * offset_beltclampy] / 2) circle(r = hole_diam / 2);
-    }
-    //this is a separate pair of loops because I want this to be compatible with both OpenSCAD and ExtOpenSCAD
-    for (y = [-1, 1]) translate([-offsetx_bearing, y * offsety_bearing] / 2) bearing_cutout(); //left bearing pair
-    //right bearing pair *or* right bearing:
-    if (overconstrained != 0) for (y = [-1, 1]) translate([offsetx_bearing, y * offsety_bearing] / 2) bearing_cutout();
-    else translate([offsetx_bearing, 0] / 2) bearing_cutout();
-    circle(r = hole_diam / 2); //for the thermistor
-}
-module ytable_assembled() {
-    linear_extrude(height = 3) ytable();
-    translate([0, 0, bearing_cutheight - bearing_od / 2]) {
-        for (x = [-1, 1]) for (y = [-1, 1]) translate([x * offsetx_bearing, y * offsety_bearing] / 2) rotate([90, 0, 0]) difference() {
-            color([1, 1, 1] * 0.7) cylinder(r = bearing_od / 2, h = bearing_len, center = true);
-            cylinder(r = bearing_id / 2, h = bearing_len * 2, center = true);
-        }
-        for (x = [-1, 1]) translate([x * offsetx_bearing, 0] / 2) rotate([90, 0, 0]) color([1, 1, 1] * 0.6) cylinder(r = bearing_id / 2, h = 400, center = true);
-    }
-    translate([0, 0, sheet_thickness + spacing]) {
-        color([0.8, 0.1, 0.1]) linear_extrude(height = pcb_thickness) difference() {
-            square([pcb_xsize, pcb_ysize], center = true);
-            for (x = [-1, 1]) for (y = [-1, 1]) translate([x * offsetx_hole, y * offsety_hole] / 2) circle(r = hole_diam / 2);
-        }
-        translate([0, 0, pcb_thickness + 0.05]) color([0.5, 0.5, 0.8, 0.5]) linear_extrude(height = glass_thickness) difference() {
-            square([glass_xsize, glass_ysize], center = true);
-            for (x = [-1, 1]) for (y = [-1, 1]) translate([x * offsetx_hole, y * offsety_hole] / 2) circle(r = hole_diam / 2);
-        }
+module bearing() {
+    union() {
+        square([bearing_cutwidth - 2 * cut_width, bearing_len - 2 * cut_width], r = 0, center = true);
+        for (y = [-1, 1])
+        translate([y * (bearing_cutwidth + ziptie_offset * 2 + ziptie_thickness), 0] / 2) ziptie();
     }
 }
 
-ytable();
+module hole() {
+    circle(r = hole_diam / 2 / cos(pi / hole_sides) - cut_width, $fn = hole_sides);
+}
+
+module belt_holes_i2() {
+    for (x = [-1, 1]) for (y = [-1, 1])
+    translate([x * 10, y * 20] / 2) hole();
+}
+
+module belt_holes_i3() {
+    translate([0, -35 / 2]) union() {
+        translate([-12, 0]) hole();
+        translate([12, 0]) hole();
+        translate([0, 35]) hole();
+    }
+}
+
+module base_cutout() {
+    square([offsetx_bearing + bearing_od, ysize - offsety_bearing - bearing_len - 2 * r], r = r, center = true);
+}
+
+module clip() {
+    square([cutout_clip_depth * 2, cutout_clip_width], r = r, center = true);
+}
+
+module spacer() {
+    difference() {
+        circle(r = r);
+        circle(r = hole_diam_threadless / 2 / cos(pi / hole_sides) - cut_width, $fn = hole_sides);
+    }
+}
+
+//part arrangements
+module bearings() {
+    for (x = [-1, 1]) for (y = [-1, 1])
+    translate([offsetx_bearing * x, offsety_bearing * y] / 2) bearing();
+}
+
+module belt_holes() {
+    union() {
+        translate([offsetx_belt, 0]) union() {
+            belt_holes_i2();
+            belt_holes_i3();
+        }
+        belt_holes_i2();
+    }
+}
+
+module bed_holes() {
+    for (x = [-1, 1]) for (y = [-1, 1])
+    translate([offsetx_hole * x, offsety_hole * y] / 2) hole();
+}
+
+module base_cutouts() {
+    for (y = [-1, 1])
+    translate([0, ysize * y] / 2) base_cutout();
+}
+
+module clips() {
+    for (x = [-1, 1]) for (y = [-1, 1])
+    translate([xsize * x, cutout_clip_offset * y] / 2) clip();
+}
+
+module spacers() {
+    for (x = [-1, 1]) for (y = [-1, 1])
+    translate([(xsize - cutout_clip_depth) * x, cutout_clip_offset * y] / 2) spacer();
+}
+
+//actual stuff
+union() {
+    //the nateplate itself
+    difference() {
+        difference(r = r) {
+            square([xsize, ysize], r = r, center = true);
+            clips();
+            base_cutouts();
+        }
+        bearings();
+        belt_holes();
+        bed_holes();
+    }
+    //free fancy spacers
+    spacers();
+}
