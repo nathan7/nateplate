@@ -1,3 +1,7 @@
+//the nateplate v2 - the awesome Y axis for Prusa3
+//Licensed GPLv2+ and CC-BY-SA - pick your poison
+//(C) 2012 Nathan Zadoks
+
 //parameters
 $quality = 20;
 r = 7.5;
@@ -31,7 +35,7 @@ cutout_clip_depth = 30;
 cutout_clip_width = 30;
 cutout_clip_offset = ysize - 2 * cutout_clip_width * 1.5;
 
-cutout_base = true;
+cutout_base = true; //for i2 compatibility
 
 /* here be dragons */
 
