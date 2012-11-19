@@ -25,6 +25,12 @@ Where do I get one of these awesome plates?
 ===========================================
 They'll be for sale at [Robosprout](http://www.robosprout.com/) soon.
 
+How do I compile the source / what is this silly programming language?
+======================================================================
+Grab a copy of [ImplicitCAD](http://www.implicitcad.org/) and compile the source with the extopenscad tool.
+The nateplate is written in extOpenSCAD, an extended version of the OpenSCAD language from ImplicitCAD.
+It has fancy stuff like rounded shapes and rounded CSG operations.
+
 I bought a nateplate v1. Where's the source?
 ============================================
 See the [git tags](https://github.com/nathan7/nateplate/tags).
