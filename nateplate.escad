@@ -3,7 +3,7 @@
 //(C) 2012 Nathan Zadoks
 
 //parameters
-$quality = 20;
+$quality = 200;
 r = 7.5;
 
 cut_width = 0.005 * 25.4;
