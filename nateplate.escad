@@ -17,8 +17,8 @@ hole_diam = 2.6;
 hole_sides = 6;
 hole_diam_threadless = 3;
 
-ziptie_width = 4;
-ziptie_thickness = 2;
+ziptie_width = 6;
+ziptie_thickness = 3;
 ziptie_offset = 1;
 
 xsize = offsetx_hole + r * 2;
