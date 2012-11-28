@@ -27,7 +27,7 @@ They'll be for sale at [Robosprout](http://www.robosprout.com/) soon.
 
 How do I compile the source / what is this silly programming language?
 ======================================================================
-Grab a copy of [ImplicitCAD](http://www.implicitcad.org/) and compile the source with the extopenscad tool.
+Grab a copy of [ImplicitCAD](http://www.implicitcad.org/) from the ImplicitCAD website or from the [ImplicitCAD git repository](https://github.com/colah/ImplicitCAD) and compile the nateplate source with the extopenscad tool.
 The nateplate is written in extOpenSCAD, an extended version of the OpenSCAD language from ImplicitCAD.
 It has fancy stuff like rounded shapes and rounded CSG operations.
 
