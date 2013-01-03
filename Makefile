@@ -1,5 +1,5 @@
 %.svg : %.escad
-	extopenscad $< $@
+	extopenscad $< -o $@
 
 project=nateplate
 all: $(project).svg
