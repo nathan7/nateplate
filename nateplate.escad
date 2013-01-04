@@ -44,19 +44,19 @@ bearing_cutwidth = sin(acos(1 - (2 * bearing_cutheight) / bearing_od)) * bearing
 
 //singular parts
 module ziptie() {
-    square([ziptie_thickness - 2 * cut_width, ziptie_width - 2 * cut_width], center = true);
+    square([ziptie_thickness - cut_width, ziptie_width - cut_width], center = true);
 }
 
 module bearing() {
     union() {
-        square([bearing_cutwidth - 2 * cut_width, bearing_len - 2 * cut_width], r = 0, center = true);
+        square([bearing_cutwidth - cut_width, bearing_len - cut_width], r = 0, center = true);
         for (y = [-1, 1])
         translate([y * (bearing_cutwidth + ziptie_offset * 2 + ziptie_thickness), 0] / 2) ziptie();
     }
 }
 
 module hole() {
-    circle(r = hole_diam / 2 / cos(pi / hole_sides) - cut_width, $fn = hole_sides);
+    circle(r = hole_diam / 2 / cos(pi / hole_sides) - cut_width / 2, $fn = hole_sides);
 }
 
 module belt_holes_i2() {
@@ -83,7 +83,7 @@ module clip() {
 module spacer() {
     difference() {
         circle(r = r);
-        circle(r = hole_diam_threadless / 2 / cos(pi / hole_sides) - cut_width, $fn = hole_sides);
+        circle(r = hole_diam_threadless / 2 / cos(pi / hole_sides) - cut_width / 2, $fn = hole_sides);
     }
 }
 
