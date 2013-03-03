@@ -23,7 +23,7 @@ A cutout to allow for clearance from the Prusa2 rod clamps is provided.
 
 Where do I get one of these awesome plates?
 ===========================================
-They'll be for sale at [Robosprout](http://www.robosprout.com/) soon.
+They're for sale at [Robosprout](http://bit.ly/nateplate).
 
 How do I compile the source / what is this silly programming language?
 ======================================================================
