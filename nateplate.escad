@@ -44,98 +44,98 @@ bearing_cutwidth = sin(acos(1 - (2 * bearing_cutheight) / bearing_od)) * bearing
 
 //singular parts
 module ziptie() {
-    square([ziptie_thickness - cut_width, ziptie_width - cut_width], center = true);
+  square([ziptie_thickness - cut_width, ziptie_width - cut_width], center = true);
 }
 
 module bearing() {
-    union() {
-        square([bearing_cutwidth - cut_width, bearing_len - cut_width], r = 0, center = true);
-        for (y = [-1, 1])
-        translate([y * (bearing_cutwidth + ziptie_offset * 2 + ziptie_thickness), 0] / 2) ziptie();
-    }
+  union() {
+    square([bearing_cutwidth - cut_width, bearing_len - cut_width], r = 0, center = true);
+    for (y = [-1, 1])
+    translate([y * (bearing_cutwidth + ziptie_offset * 2 + ziptie_thickness), 0] / 2) ziptie();
+  }
 }
 
 module hole() {
-    circle(r = hole_diam / 2 / cos(pi / hole_sides) - cut_width / 2, $fn = hole_sides);
+  circle(r = hole_diam / 2 / cos(pi / hole_sides) - cut_width / 2, $fn = hole_sides);
 }
 
 module belt_holes_i2() {
-    for (x = [-1, 1]) for (y = [-1, 1])
-    translate([x * 18, y * 20] / 2) hole();
+  for (x = [-1, 1]) for (y = [-1, 1])
+  translate([x * 18, y * 20] / 2) hole();
 }
 
 module belt_holes_i3() {
-    translate([0, -35 / 2]) union() {
-        translate([-12, 0]) hole();
-        translate([12, 0]) hole();
-        translate([0, 35]) hole();
-    }
+  translate([0, -35 / 2]) union() {
+    translate([-12, 0]) hole();
+    translate([12, 0]) hole();
+    translate([0, 35]) hole();
+  }
 }
 
 module base_cutout() {
-    square([offsetx_bearing + bearing_od, ysize - offsety_bearing - bearing_len - 2 * r], r = r, center = true);
+  square([offsetx_bearing + bearing_od, ysize - offsety_bearing - bearing_len - 2 * r], r = r, center = true);
 }
 
 module clip() {
-    square([cutout_clip_depth * 2, cutout_clip_width], r = r, center = true);
+  square([cutout_clip_depth * 2, cutout_clip_width], r = r, center = true);
 }
 
 module spacer() {
-    difference() {
-        circle(r = r);
-        circle(r = hole_diam_threadless / 2 / cos(pi / hole_sides) - cut_width / 2, $fn = hole_sides);
-    }
+  difference() {
+    circle(r = r);
+    circle(r = hole_diam_threadless / 2 / cos(pi / hole_sides) - cut_width / 2, $fn = hole_sides);
+  }
 }
 
 //part arrangements
 module bearings() {
-    for (x = [-1, 1]) for (y = [-1, 1])
-    translate([offsetx_bearing * x, offsety_bearing * y] / 2) bearing();
+  for (x = [-1, 1]) for (y = [-1, 1])
+  translate([offsetx_bearing * x, offsety_bearing * y] / 2) bearing();
 }
 
 module belt_holes() {
-    union() {
-        translate([offsetx_belt, 0]) union() {
-            belt_holes_i2();
-            belt_holes_i3();
-        }
-        belt_holes_i2();
+  union() {
+    translate([offsetx_belt, 0]) union() {
+      belt_holes_i2();
+      belt_holes_i3();
     }
+    belt_holes_i2();
+  }
 }
 
 module bed_holes() {
-    for (x = [-1, 1]) for (y = [-1, 1])
-    translate([offsetx_hole * x, offsety_hole * y] / 2) hole();
+  for (x = [-1, 1]) for (y = [-1, 1])
+  translate([offsetx_hole * x, offsety_hole * y] / 2) hole();
 }
 
 module base_cutouts() {
-    for (y = [-1, 1])
-    translate([0, ysize * y] / 2) base_cutout();
+  for (y = [-1, 1])
+  translate([0, ysize * y] / 2) base_cutout();
 }
 
 module clips() {
-    for (x = [-1, 1]) for (y = [-1, 1])
-    translate([xsize * x, cutout_clip_offset * y] / 2) clip();
+  for (x = [-1, 1]) for (y = [-1, 1])
+  translate([xsize * x, cutout_clip_offset * y] / 2) clip();
 }
 
 module spacers() {
-    for (x = [-1, 1]) for (y = [-1, 1])
-    translate([(xsize - cutout_clip_depth) * x, cutout_clip_offset * y] / 2) spacer();
+  for (x = [-1, 1]) for (y = [-1, 1])
+  translate([(xsize - cutout_clip_depth) * x, cutout_clip_offset * y] / 2) spacer();
 }
 
 //actual stuff
 union() {
-    //the nateplate itself
-    difference() {
-        difference(r = r) {
-            square([xsize, ysize], r = r, center = true);
-            clips();
-            base_cutouts();
-        }
-        bearings();
-        belt_holes();
-        bed_holes();
+  //the nateplate itself
+  difference() {
+    difference(r = r) {
+      square([xsize, ysize], r = r, center = true);
+      clips();
+      base_cutouts();
     }
-    //free fancy spacers
-    spacers();
+    bearings();
+    belt_holes();
+    bed_holes();
+  }
+  //free fancy spacers
+  spacers();
 }
