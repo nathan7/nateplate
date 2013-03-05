@@ -130,7 +130,8 @@ union() {
     difference(r = r) {
       square([xsize, ysize], r = r, center = true);
       clips();
-      base_cutouts();
+      if (cutout_base)
+        base_cutouts();
     }
     bearings();
     belt_holes();
